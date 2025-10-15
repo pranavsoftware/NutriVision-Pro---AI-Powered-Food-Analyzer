@@ -81,15 +81,15 @@ NutriVision Pro leverages Google's Gemini AI to deliver comprehensive nutritiona
 ## 📸 Screenshots
 
 ### Landing Page - Your Personal Nutrition Assistant
-![Landing Page](./screenshots/landing-page.png)
+![Landing Page](./food%20analyzer/Sample%20result%201.png)
 *Feature overview with multiple nutrition journey options*
 
 ### Food Analyzer Dashboard
-![Analyzer Dashboard](./screenshots/analyzer-dashboard.png)
+![Analyzer Dashboard](./food%20analyzer/Sample%20result%202.png)
 *Simple drag-and-drop interface for food image upload*
 
 ### Comprehensive Analysis Results
-![Analysis Results](./screenshots/analysis-results.png)
+![Analysis Results](./food%20analyzer/Sample%20result%203.png)
 *Detailed nutritional breakdown with health insights and recommendations*
 
 ---
