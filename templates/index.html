@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriVision Pro - Advanced Nutrition Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">
+                <div class="logo">
+                    <span class="logo-icon">🥗</span>
+                    <span class="logo-text">NutriVision Pro</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <span class="header-emoji">⚡</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="title-emoji">🍎</span>
+                        Your Personal Nutrition Assistant
+                        <span class="title-emoji">🥑</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Advanced AI-powered nutrition analysis and meal planning platform
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-emoji">📊</span>
+                            <span class="stat-number">10K+</span>
+                            <span class="stat-label">Foods Analyzed</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-emoji">👥</span>
+                            <span class="stat-number">5K+</span>
+                            <span class="stat-label">Happy Users</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-emoji">🎯</span>
+                            <span class="stat-number">98%</span>
+                            <span class="stat-label">Accuracy</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Grid -->
+            <section class="features-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="section-emoji">🌟</span>
+                        Choose Your Nutrition Journey
+                    </h2>
+                </div>
+                
+                <div class="features-grid">
+                    <!-- Feature 1: Scan Food -->
+                    <div class="feature-card" data-feature="scan">
+                        <div class="card-inner">
+                            <div class="card-icon">
+                                <span class="feature-emoji">📱</span>
+                                <div class="icon-glow"></div>
+                            </div>
+                            <h3 class="card-title">Scan Food</h3>
+                            <p class="card-description">
+                                Upload food images for instant AI-powered nutritional analysis
+                            </p>
+                            <div class="card-features">
+                                <span class="feature-tag">🔬 AI Analysis</span>
+                                <span class="feature-tag">⚡ Instant Results</span>
+                            </div>
+                            <button class="card-button" onclick="navigateToFeature('scan')">
+                                <span>Start Scanning</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Feature 2: Meal Planner -->
+                    <div class="feature-card" data-feature="meal">
+                        <div class="card-inner">
+                            <div class="card-icon">
+                                <span class="feature-emoji">🍽️</span>
+                                <div class="icon-glow"></div>
+                            </div>
+                            <h3 class="card-title">Meal Planner</h3>
+                            <p class="card-description">
+                                Create personalized meal plans based on your dietary goals
+                            </p>
+                            <div class="card-features">
+                                <span class="feature-tag">📅 Weekly Plans</span>
+                                <span class="feature-tag">🎯 Goal Oriented</span>
+                            </div>
+                            <button class="card-button" onclick="navigateToFeature('meal')">
+                                <span>Plan Meals</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Feature 3: Ask Query -->
+                    <div class="feature-card" data-feature="query">
+                        <div class="card-inner">
+                            <div class="card-icon">
+                                <span class="feature-emoji">💬</span>
+                                <div class="icon-glow"></div>
+                            </div>
+                            <h3 class="card-title">Ask Query</h3>
+                            <p class="card-description">
+                                Get instant answers to your nutrition and health questions
+                            </p>
+                            <div class="card-features">
+                                <span class="feature-tag">🤖 AI Assistant</span>
+                                <span class="feature-tag">💡 Expert Tips</span>
+                            </div>
+                            <button class="card-button" onclick="navigateToFeature('query')">
+                                <span>Ask Now</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Feature 4: Diet Expert -->
+                    <div class="feature-card" data-feature="expert">
+                        <div class="card-inner">
+                            <div class="card-icon">
+                                <span class="feature-emoji">👨‍⚕️</span>
+                                <div class="icon-glow"></div>
+                            </div>
+                            <h3 class="card-title">Diet Expert</h3>
+                            <p class="card-description">
+                                Get professional dietary advice and personalized recommendations
+                            </p>
+                            <div class="card-features">
+                                <span class="feature-tag">👩‍⚕️ Expert Advice</span>
+                                <span class="feature-tag">📈 Progress Tracking</span>
+                            </div>
+                            <button class="card-button" onclick="navigateToFeature('expert')">
+                                <span>Consult Expert</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Info Section -->
+            <section class="info-section">
+                <div class="info-content">
+                    <h3 class="info-title">
+                        <span class="info-emoji">🚀</span>
+                        Why Choose NutriVision Pro?
+                    </h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-icon">🧠</span>
+                            <h4>AI-Powered Analysis</h4>
+                            <p>Advanced machine learning algorithms for accurate nutritional insights</p>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">📱</span>
+                            <h4>User-Friendly Interface</h4>
+                            <p>Intuitive design that makes nutrition tracking effortless</p>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">🔒</span>
+                            <h4>Data Security</h4>
+                            <p>Your health data is protected with enterprise-grade security</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <span class="footer-logo">🥗 NutriVision Pro</span>
+                    <p class="footer-tagline">Empowering healthier choices through technology</p>
+                </div>
+                <div class="footer-right">
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/pranavrayban/" target="_blank" rel="noopener noreferrer" class="social-link" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://github.com/pranavsoftware" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 NutriVision Pro. All rights reserved. | Designed with ❤️ for healthier living</p>
+                <p class="developer-info">
+                    Developed by <strong>Pranav Rayban</strong> | 
+                    <a href="https://www.linkedin.com/in/pranavrayban/" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a> | 
+                    <a href="https://github.com/pranavsoftware" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="floating-emoji" data-emoji="🍊" style="--delay: 0s; --x: 10%; --y: 20%;"></div>
+        <div class="floating-emoji" data-emoji="🥕" style="--delay: 1s; --x: 85%; --y: 30%;"></div>
+        <div class="floating-emoji" data-emoji="🥦" style="--delay: 2s; --x: 15%; --y: 70%;"></div>
+        <div class="floating-emoji" data-emoji="🍌" style="--delay: 3s; --x: 90%; --y: 80%;"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
