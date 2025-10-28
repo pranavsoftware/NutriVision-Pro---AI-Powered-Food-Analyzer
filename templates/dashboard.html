@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Analyzer - Professional Nutrition Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/analyzer.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="home-btn" title="Back to Home">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+            </a>
+            <div class="header-icon">
+                <svg width="60" height="60" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="#ff6b6b" opacity="0.9"/>
+                    <ellipse cx="50" cy="35" rx="35" ry="30" fill="#ff8787"/>
+                    <path d="M 50 10 Q 55 5 60 10 T 65 20" fill="none" stroke="#4caf50" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="40" cy="40" r="2" fill="#fff"/>
+                    <circle cx="60" cy="45" r="2" fill="#fff"/>
+                </svg>
+            </div>
+            <h1>Food Analyzer Pro</h1>
+            <p>Advanced AI-Powered Nutritional Analysis System</p>
+        </div>
+        
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                </div>
+                <h3>Drop your food image here or click to browse</h3>
+                <p>Supported formats: JPG, PNG, GIF, BMP, WebP (Max: 16MB)</p>
+                <input type="file" id="fileInput" class="file-input" accept="image/*">
+                <br><br>
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    Choose File
+                </button>
+                <div class="file-info" id="fileInfo"></div>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner-svg">
+                    <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#667eea" stroke-width="8" 
+                                stroke-dasharray="283" stroke-dashoffset="75" stroke-linecap="round"
+                                class="spinner-circle"/>
+                        <g class="food-icon">
+                            <circle cx="50" cy="45" r="15" fill="#ff6b6b" opacity="0.8"/>
+                            <path d="M 50 25 Q 52 20 55 22" fill="none" stroke="#4caf50" stroke-width="2"/>
+                        </g>
+                    </svg>
+                </div>
+                <div class="loading-text">Analyzing your food image...</div>
+                <div class="loading-subtext">Our AI is examining nutritional content, please wait</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="results-header">
+                <img id="foodImage" class="food-image" src="" alt="Food Image">
+                <button class="reset-btn" onclick="resetAnalysis()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    Analyze Another Image
+                </button>
+            </div>
+            
+            <table class="info-table" id="resultsTable">
+                <!-- Results will be populated here -->
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const uploadSection = document.getElementById('uploadSection');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const resultsTable = document.getElementById('resultsTable');
+        const foodImage = document.getElementById('foodImage');
+        const fileInfo = document.getElementById('fileInfo');
+        const progressFill = document.getElementById('progressFill');
+
+        // Store user's location
+        let userLocation = null;
+
+        // Request location access on page load
+        window.addEventListener('load', () => {
+            requestLocationAccess();
+        });
+
+        function requestLocationAccess() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        };
+                        console.log('Location access granted:', userLocation);
+                        showLocationStatus(true);
+                    },
+                    (error) => {
+                        console.error('Location access denied:', error);
+                        showLocationStatus(false);
+                    }
+                );
+            } else {
+                console.warn('Geolocation is not supported by this browser.');
+                showLocationStatus(false);
+            }
+        }
+
+        function showLocationStatus(granted) {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = granted ? 'success' : 'warning';
+            statusDiv.style.marginBottom = '20px';
+            statusDiv.innerHTML = granted 
+                ? '<strong>✓ Location Access Granted:</strong> We can now show nearby places where you can find the food items!'
+                : '<strong>⚠ Location Access Denied:</strong> Enable location to see nearby shops and restaurants.';
+            
+            const uploadSection = document.getElementById('uploadSection');
+            uploadSection.insertBefore(statusDiv, uploadSection.firstChild);
+            
+            setTimeout(() => {
+                statusDiv.remove();
+            }, 5000);
+        }
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            if (!uploadArea.contains(e.relatedTarget)) {
+                uploadArea.classList.remove('dragover');
+            }
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                displayFileInfo(files[0]);
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                displayFileInfo(e.target.files[0]);
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function displayFileInfo(file) {
+            const fileSize = (file.size / 1024 / 1024).toFixed(2);
+            fileInfo.innerHTML = `
+                <strong>Selected:</strong> ${file.name}<br>
+                <strong>Size:</strong> ${fileSize} MB<br>
+                <strong>Type:</strong> ${file.type}
+            `;
+        }
+
+        function simulateProgress() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                progressFill.style.width = progress + '%';
+                
+                if (progress >= 90) {
+                    clearInterval(interval);
+                }
+            }, 200);
+            
+            return interval;
+        }
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showError('Please select a valid image file.');
+                return;
+            }
+
+            if (file.size > 16 * 1024 * 1024) {
+                showError('File size too large. Maximum size is 16MB.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            // Add location data if available
+            if (userLocation) {
+                formData.append('latitude', userLocation.latitude);
+                formData.append('longitude', userLocation.longitude);
+            }
+
+            // Show loading with progress simulation
+            uploadSection.style.display = 'none';
+            loading.style.display = 'block';
+            progressFill.style.width = '0%';
+            
+            const progressInterval = simulateProgress();
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                clearInterval(progressInterval);
+                progressFill.style.width = '100%';
+                
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    
+                    if (data.success) {
+                        displayResults(data.food_data, data.image_base64);
+                        showSuccess('Analysis completed successfully!');
+                    } else {
+                        showError(data.error || 'An error occurred while analyzing the image.');
+                        uploadSection.style.display = 'block';
+                    }
+                }, 500);
+            })
+            .catch(error => {
+                clearInterval(progressInterval);
+                loading.style.display = 'none';
+                console.error('Error:', error);
+                showError('Network error: ' + error.message);
+                uploadSection.style.display = 'block';
+            });
+        }
+
+        function displayResults(foodData, imageBase64) {
+            // Display the uploaded image
+            foodImage.src = imageBase64;
+
+            // Build the results table
+            let tableHTML = '';
+
+            // Basic Information
+            tableHTML += `
+                <tr><th colspan="2" class="section-title">🍽️ Basic Information</th></tr>
+                <tr><td><strong>Food Name</strong></td><td>${foodData.food_name || 'N/A'}</td></tr>
+                <tr><td><strong>Category</strong></td><td>${foodData.category || 'N/A'}</td></tr>
+                <tr><td><strong>Calories (per 100g)</strong></td><td>${foodData.calories_per_100g || 'N/A'}</td></tr>
+                <tr><td><strong>Serving Size</strong></td><td>${foodData.serving_size || 'N/A'}</td></tr>
+                <tr><td><strong>Glycemic Index</strong></td><td>${foodData.glycemic_index || 'N/A'}</td></tr>
+            `;
+
+            // Nearby Places Section - NEW!
+            if (foodData.nearby_places && foodData.nearby_places.length > 0) {
+                tableHTML += `<tr><th colspan="2" class="section-title">📍 Where to Find "${foodData.food_name}"</th></tr>`;
+                foodData.nearby_places.forEach((place, index) => {
+                    tableHTML += `
+                        <tr>
+                            <td colspan="2" style="padding: 15px; background: #f8f9fa; border-left: 4px solid #667eea;">
+                                <div style="margin-bottom: 5px;">
+                                    <strong style="color: #667eea; font-size: 16px;">${index + 1}. ${place.name}</strong>
+                                    <span style="background: #667eea; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 8px;">${place.type}</span>
+                                </div>
+                                <div style="color: #666; margin-top: 5px;">${place.description}</div>
+                                <div style="color: #999; font-size: 13px; margin-top: 3px;">📏 ${place.distance}</div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else if (userLocation) {
+                tableHTML += `
+                    <tr><th colspan="2" class="section-title">📍 Nearby Places</th></tr>
+                    <tr><td colspan="2">No specific location suggestions available for this item.</td></tr>
+                `;
+            }
+
+            // Nutritional Information
+            if (foodData.nutritional_info) {
+                tableHTML += `<tr><th colspan="2" class="section-title">📊 Nutritional Information (per 100g)</th></tr>`;
+                Object.entries(foodData.nutritional_info).forEach(([key, value]) => {
+                    const label = key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ');
+                    const unit = key === 'sodium' ? 'mg' : 'g';
+                    const displayValue = value && value !== 'N/A' ? `${value}${unit}` : 'N/A';
+                    tableHTML += `<tr><td><strong>${label}</strong></td><td>${displayValue}</td></tr>`;
+                });
+            }
+
+            // Vitamins and Minerals
+            if (foodData.vitamins_minerals && Object.keys(foodData.vitamins_minerals).length > 0) {
+                tableHTML += `<tr><th colspan="2" class="section-title">💊 Vitamins & Minerals</th></tr>`;
+                Object.entries(foodData.vitamins_minerals).forEach(([key, value]) => {
+                    if (value && value !== 'N/A') {
+                        const label = key.charAt(0).toUpperCase() + key.slice(1).replace('_', ' ');
+                        tableHTML += `<tr><td><strong>${label}</strong></td><td>${value}</td></tr>`;
+                    }
+                });
+            }
+
+            // Health Benefits
+            if (foodData.health_benefits && foodData.health_benefits.length > 0) {
+                const benefitsList = foodData.health_benefits.map(benefit => `<li>${benefit}</li>`).join('');
+                tableHTML += `
+                    <tr><th colspan="2" class="section-title">🌟 Health Benefits</th></tr>
+                    <tr><td colspan="2"><ul>${benefitsList}</ul></td></tr>
+                `;
+            }
+
+            // Allergens
+            if (foodData.allergens && foodData.allergens.length > 0) {
+                const allergensList = foodData.allergens.join(', ');
+                tableHTML += `
+                    <tr><th colspan="2" class="section-title">⚠️ Potential Allergens</th></tr>
+                    <tr><td colspan="2">${allergensList}</td></tr>
+                `;
+            } else {
+                tableHTML += `
+                    <tr><th colspan="2" class="section-title">⚠️ Potential Allergens</th></tr>
+                    <tr><td colspan="2">No known common allergens identified</td></tr>
+                `;
+            }
+
+            // Dietary Restrictions
+            if (foodData.dietary_restrictions && foodData.dietary_restrictions.length > 0) {
+                const dietaryList = foodData.dietary_restrictions.join(', ');
+                tableHTML += `
+                    <tr><th colspan="2" class="section-title">🥗 Suitable For</th></tr>
+                    <tr><td colspan="2">${dietaryList}</td></tr>
+                `;
+            }
+
+            // Storage Tips
+            if (foodData.storage_tips && foodData.storage_tips !== 'N/A') {
+                tableHTML += `
+                    <tr><th colspan="2" class="section-title">🏪 Storage Tips</th></tr>
+                    <tr><td colspan="2">${foodData.storage_tips}</td></tr>
+                `;
+            }
+
+            // Preparation Suggestions
+            if (foodData.preparation_suggestions && foodData.preparation_suggestions.length > 0) {
+                const prepList = foodData.preparation_suggestions.map(prep => `<li>${prep}</li>`).join('');
+                tableHTML += `
+                    <tr><th colspan="2" class="section-title">👨‍🍳 Preparation Suggestions</th></tr>
+                    <tr><td colspan="2"><ul>${prepList}</ul></td></tr>
+                `;
+            }
+
+            resultsTable.innerHTML = tableHTML;
+            results.style.display = 'block';
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.innerHTML = `<strong>Error:</strong> ${message}`;
+            
+            const uploadSection = document.getElementById('uploadSection');
+            uploadSection.insertBefore(errorDiv, uploadSection.firstChild);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.innerHTML = `<strong>Success:</strong> ${message}`;
+            
+            const results = document.getElementById('results');
+            results.insertBefore(successDiv, results.firstChild);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        function resetAnalysis() {
+            results.style.display = 'none';
+            uploadSection.style.display = 'block';
+            fileInput.value = '';
+            fileInfo.innerHTML = '';
+            progressFill.style.width = '0%';
+        }
+
+        // Add some loading text variations
+        const loadingTexts = [
+            "Analyzing nutritional content...",
+            "Identifying food components...",
+            "Calculating health benefits...",
+            "Processing dietary information...",
+            "Finding nearby places...",
+            "Finalizing analysis..."
+        ];
+
+        let textIndex = 0;
+        setInterval(() => {
+            const loadingTextElement = document.querySelector('.loading-text');
+            if (loading.style.display === 'block') {
+                loadingTextElement.textContent = loadingTexts[textIndex];
+                textIndex = (textIndex + 1) % loadingTexts.length;
+            }
+        }, 1500);
+    </script>
+</body>
+</html>
