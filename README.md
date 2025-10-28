@@ -475,13 +475,13 @@ nutrivision-pro/
 ## Screenshots
 
 ### Landing Page
-![Landing Page](https://via.placeholder.com/800x450/667eea/ffffff?text=NutriVision+Pro+Landing+Page)
+![Landing Page](food analyzer\Sample result 1.png)
 
 ### Food Analyzer Dashboard
-![Analyzer](https://via.placeholder.com/800x450/764ba2/ffffff?text=Food+Analyzer+Dashboard)
+![Analyzer](food analyzer\Sample result 2.png)
 
 ### Analysis Results
-![Results](https://via.placeholder.com/800x450/667eea/ffffff?text=Nutritional+Analysis+Results)
+![Results](food analyzer\Sample result 3.png)
 
 ---
 
